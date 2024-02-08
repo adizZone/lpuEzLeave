@@ -10,7 +10,7 @@ import time
 
 
 def webScrapper(username, password, leaveType, visitPlace, stayAddress, rMob, sdt, edt, reason):
-    service = Service(executable_path='./chromedriver-win64/chromedriver.exe')
+    service = Service(ChromeDriverManager().install())
     options = webdriver.ChromeOptions()
     driver = webdriver.Chrome(service=service, options=options)
 
