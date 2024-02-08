@@ -109,13 +109,13 @@ if __name__ == '__main__':
     options01 = ['Select', 'Night Leave', 'Day Leave', 'Day Leave(Extended Leave Timing)', 'Night Leave(Extended Leave Timing)', 'Vacation Leave']
     options02 = ['Select', 'Home', 'Local Guardian', 'Personal grooming', 'Medical checkup', "Due to Academic purposes", "Local Visit", "Out Station Visit", "Coaching", "Placement", "Other"]
 
+    st.markdown('<h3 style="color: red;">Applying Leave Made Easy - lpuEzLeave</h3>', unsafe_allow_html=True)
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
     leaveType = st.selectbox("Choose Leave Type", options01)
     visitPlace = st.selectbox("Visit Place", options02)
     stayAddress = st.text_area("Stay Address")
-    reason = st.text_area("Reason of Leaving")
-    mobile_number = st.text_input("Relative Mobile No.")
+    mobile_number = st.text_input("Relative's Mobile No.")
 
     rMob = ''
     if mobile_number:
@@ -125,31 +125,36 @@ if __name__ == '__main__':
             st.error("Please enter a valid 10-digit mobile number.")
             mobile_number = None
 
+
     st.write("--( Kindly select date-times which could be applicable )--")
+    st.write("-----------")
     sDate = st.date_input("Leave Start Date", value=None)
     sTime = st.time_input("Leave Start Time", value=None)
     eDate = st.date_input("Leave End Date", value=None)
     eTime = st.time_input("Leave End Time", value=None)
+    st.write("-----------")
+    reason = st.text_area("Reason of Leaving")
 
     if sDate is not None and sTime is not None and eDate is not None and eTime is not None:
-        if sTime.hour > 12:
+        if sTime.hour>12:
             sth = sTime.hour - 12
         else:
             sth = sTime.hour
-        if sth < 1:
-            sth = 12
+        if sth<1:
+            sth=12
 
-        if eTime.hour > 12:
+        if eTime.hour>12:
             eth = eTime.hour - 12
         else:
             eth = eTime.hour
-        if eth < 1:
-            eth = 12
+        if eth<1:
+            eth=12
 
-        sdt = f'{sDate.month}/{sDate.day}/{sDate.year} {sth}:{sTime.minute}{" PM" if sTime.hour >= 12 else " AM"}'
-        edt = f'{eDate.month}/{eDate.day}/{eDate.year} {eth}:{eTime.minute}{" PM" if eTime.hour >= 12 else " AM"}'
+        sdt = f'{sDate.month}/{sDate.day}/{sDate.year} {sth}:{sTime.minute}{" PM" if sTime.hour>=12  else " AM"}'
+        edt = f'{eDate.month}/{eDate.day}/{eDate.year} {eth}:{eTime.minute}{" PM" if eTime.hour>=12  else " AM"}'
 
-    if st.button("Submit"):
+
+    if st.button("Apply"):
         if username == "":
             st.warning('Username field is required!')
         elif password == "":
