@@ -1,36 +1,24 @@
 import streamlit as st
 from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.chrome.service import Service
+from webdriver_manager.firefox import GeckoDriverManager
+from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.common.by import By
-# from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
-# from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
-# import time
-
 
 def webScrapper(username, password, leaveType, visitPlace, stayAddress, rMob, sdt, edt, reason):
-    service = Service(ChromeDriverManager().install())
-    options = webdriver.ChromeOptions()
-    driver = webdriver.Chrome(service=service, options=options)
+    service = Service(GeckoDriverManager().install())
+    options = webdriver.FirefoxOptions()
+    driver = webdriver.Firefox(service=service, options=options)
 
-    # URL of the website to navigate to
     url = "https://ums.lpu.in/lpuums/"
-
-    # Navigate to the login page
     driver.get(url)
 
-    # Find the username and password input fields and fill them with credentials
     username_input = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, "txtU"))
     )
     driver.execute_script("arguments[0].removeAttribute('onchange')", username_input)
-
     username_input.send_keys(username)
-
-    # form_section = driver.find_element(By.CSS_SELECTOR, "div.form-section")
-    # ActionChains(driver).move_to_element(form_section).click().perform()
 
     password_input = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, "TxtpwdAutoId_8767"))
@@ -41,7 +29,6 @@ def webScrapper(username, password, leaveType, visitPlace, stayAddress, rMob, sd
     driver.execute_script("arguments[0].click();", submit_button)
 
     leave_url = "https://ums.lpu.in/lpuums/frmStudentHostelLeaveApplicationTermWise.aspx"
-
     driver.get(leave_url)
 
     WebDriverWait(driver, 10).until(
@@ -52,7 +39,6 @@ def webScrapper(username, password, leaveType, visitPlace, stayAddress, rMob, sd
         EC.presence_of_element_located((By.XPATH, '//option[@value="Term-II"]'))
     ).click()
 
-
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, "ctl00_cphHeading_drpLeaveType"))
     ).click()
@@ -60,7 +46,6 @@ def webScrapper(username, password, leaveType, visitPlace, stayAddress, rMob, sd
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.XPATH, f'//option[text()="{leaveType}"]'))
     ).click()
-
 
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, "ctl00_cphHeading_ddlVisitDay"))
@@ -70,40 +55,30 @@ def webScrapper(username, password, leaveType, visitPlace, stayAddress, rMob, sd
         EC.presence_of_element_located((By.XPATH, f'//option[@value="{visitPlace}"]'))
     ).click()
 
-
     sAdd = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, "ctl00_cphHeading_txtPlaceToVisit"))
     )
     sAdd.send_keys(stayAddress)
 
-
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, "ctl00_cphHeading_txtVisitingMobile"))
     ).send_keys(rMob)
 
-
     sdt_element = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, 'ctl00_cphHeading_startdateRadDateTimePicker1_dateInput'))
     )
-
     driver.execute_script("arguments[0].removeAttribute('readonly')", sdt_element)
-
     sdt_element.send_keys(sdt)
-
 
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, "ctl00_cphHeading_txtLeaveReason"))
     ).click()
-    
 
     edt_element = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, 'ctl00_cphHeading_enddateRadDateTimePicker2_dateInput'))
     )
-
     driver.execute_script("arguments[0].removeAttribute('readonly')", edt_element)
-
     edt_element.send_keys(edt)
-
 
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, "ctl00_cphHeading_txtLeaveReason"))
@@ -111,7 +86,6 @@ def webScrapper(username, password, leaveType, visitPlace, stayAddress, rMob, sd
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, "ctl00_cphHeading_txtLeaveReason"))
     ).send_keys(reason)
-
 
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, "ctl00_cphHeading_btnSubmit"))
@@ -122,22 +96,17 @@ def webScrapper(username, password, leaveType, visitPlace, stayAddress, rMob, sd
     alert.accept()
     st.write(f"Leave ID: {alert_text}")
 
-
-
 # Function to validate mobile number
 def validate_mobile_number(mobile):
     import re
-    # Regular expression to match mobile number format
     pattern = r"^\d{10}$"
     if re.match(pattern, mobile):
         return True
     else:
         return False
 
-
-if __name__ ==  '__main__':
+if __name__ == '__main__':
     options01 = ['Select', 'Night Leave', 'Day Leave', 'Day Leave(Extended Leave Timing)', 'Night Leave(Extended Leave Timing)', 'Vacation Leave']
-
     options02 = ['Select', 'Home', 'Local Guardian', 'Personal grooming', 'Medical checkup', "Due to Academic purposes", "Local Visit", "Out Station Visit", "Coaching", "Placement", "Other"]
 
     username = st.text_input("Username")
@@ -156,7 +125,6 @@ if __name__ ==  '__main__':
             st.error("Please enter a valid 10-digit mobile number.")
             mobile_number = None
 
-
     st.write("--( Kindly select date-times which could be applicable )--")
     sDate = st.date_input("Leave Start Date", value=None)
     sTime = st.time_input("Leave Start Time", value=None)
@@ -164,23 +132,22 @@ if __name__ ==  '__main__':
     eTime = st.time_input("Leave End Time", value=None)
 
     if sDate is not None and sTime is not None and eDate is not None and eTime is not None:
-        if sTime.hour>12:
+        if sTime.hour > 12:
             sth = sTime.hour - 12
         else:
             sth = sTime.hour
-        if sth<1:
-            sth=12
+        if sth < 1:
+            sth = 12
 
-        if eTime.hour>12:
+        if eTime.hour > 12:
             eth = eTime.hour - 12
         else:
             eth = eTime.hour
-        if eth<1:
-            eth=12
+        if eth < 1:
+            eth = 12
 
-        sdt = f'{sDate.month}/{sDate.day}/{sDate.year} {sth}:{sTime.minute}{" PM" if sTime.hour>=12  else " AM"}'
-        edt = f'{eDate.month}/{eDate.day}/{eDate.year} {eth}:{eTime.minute}{" PM" if eTime.hour>=12  else " AM"}'
-
+        sdt = f'{sDate.month}/{sDate.day}/{sDate.year} {sth}:{sTime.minute}{" PM" if sTime.hour >= 12 else " AM"}'
+        edt = f'{eDate.month}/{eDate.day}/{eDate.year} {eth}:{eTime.minute}{" PM" if eTime.hour >= 12 else " AM"}'
 
     if st.button("Submit"):
         if username == "":
