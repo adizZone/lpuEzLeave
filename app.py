@@ -8,6 +8,8 @@ from selenium.webdriver.support import expected_conditions as EC
 
 def webScrapper(username, password, leaveType, visitPlace, stayAddress, rMob, sdt, edt, reason):
     options = webdriver.FirefoxOptions()
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
     options.headless = True  # Run Firefox in headless mode
 
     service = Service(GeckoDriverManager().install())
