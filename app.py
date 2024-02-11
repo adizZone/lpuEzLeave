@@ -7,8 +7,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 def webScrapper(username, password, leaveType, visitPlace, stayAddress, rMob, sdt, edt, reason):
-    service = Service(GeckoDriverManager().install())
     options = webdriver.FirefoxOptions()
+    options.headless = True  # Run Firefox in headless mode
+
+    service = Service(GeckoDriverManager().install())
     driver = webdriver.Firefox(service=service, options=options)
 
     url = "https://ums.lpu.in/lpuums/"
